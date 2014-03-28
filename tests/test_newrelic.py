@@ -145,8 +145,9 @@ class TestCompileNewRelic(object):
     def _set_web_server(self, optsFile, webServer):
         options = json.load(open(optsFile))
         options['WEB_SERVER'] = webServer
-        options['DOWNLOAD_URL'] = 'http://localhost:5001'
-        options['NEWRELIC_DOWNLOAD_URL'] = '{DOWNLOAD_URL}/newrelic/{NEWRELIC_PACKAGE}'
+        options['DOWNLOAD_URL'] = 'http://localhost:5000/binaries'
+        options['NEWRELIC_DOWNLOAD_URL'] = \
+            '{DOWNLOAD_URL}/newrelic/{NEWRELIC_VERSION}/{NEWRELIC_PACKAGE}'
         json.dump(options, open(optsFile, 'wt'))
 
     def setUp(self):
@@ -202,7 +203,8 @@ class TestCompileNewRelic(object):
             output = ''
             output = bp._compile()
             outputLines = output.split('\n')
-            eq_(22, len([l for l in outputLines if l.startswith('Downloaded')]))
+            eq_(22, len([l for l in outputLines
+                         if l.startswith('Downloaded')]))
             eq_(2, len([l for l in outputLines if l.startswith('Installing')]))
             eq_(True, outputLines[-1].startswith('Finished:'))
             # Test scripts and config
